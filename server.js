@@ -39,8 +39,10 @@
 	app.get('/scrape', function(req, res) {
 	  request('https://medium.com/browse/b99480981476', function(error, response, html) { // "medium's technology section"
 
+			// console.log(html) // request works
 	    var $ = cheerio.load(html);
-	    $('article h2').each(function(i, element) {
+			// console.log(html) // cheerio load works
+	    $('article').each(function(i, element) {
 
 					var result = {};
 
@@ -63,54 +65,54 @@
 	  res.send("Scrape Complete");
 	});
 
-	//Finish the route so it responds with all articles
-	app.get('/articles', function(req, res){
-		Article.find({}, function(err, doc){
-			if (err){
-				console.log(err);
-			} else {
-				res.json(doc);
-			}
-		});
-	});
-
-		//Finish the route so it finds one article from the req.params.id,
-		//populates "note",
-		//and then responds with the article
-	app.get('/articles/:id', function(req, res){
-		Article.findOne({'_id': req.params.id})
-		.populate('note')
-		.exec(function(err, doc){
-			if (err){
-				console.log(err);
-			} else {
-				res.json(doc);
-			}
-		});
-	});
-
-		//save a new note
-		//then find an article from the req.params.id
-		//and updates "note" with the _id of the new note
-	app.post('/articles/:id', function(req, res){
-		var newNote = new Note(req.body);
-
-		newNote.save(function(err, doc){
-			if(err){
-				console.log(err);
-			} else {
-				Article.findOneAndUpdate({'_id': req.params.id}, {'note':doc._id})
-				.exec(function(err, doc){
-					if (err){
-						console.log(err);
-					} else {
-						res.send(doc);
-					}
-				});
-
-			}
-		});
-	});
+	// //Finish the route so it responds with all articles
+	// app.get('/articles', function(req, res){
+	// 	Article.find({}, function(err, doc){
+	// 		if (err){
+	// 			console.log(err);
+	// 		} else {
+	// 			res.json(doc);
+	// 		}
+	// 	});
+	// });
+	//
+	// 	//Finish the route so it finds one article from the req.params.id,
+	// 	//populates "note",
+	// 	//and then responds with the article
+	// app.get('/articles/:id', function(req, res){
+	// 	Article.findOne({'_id': req.params.id})
+	// 	.populate('note')
+	// 	.exec(function(err, doc){
+	// 		if (err){
+	// 			console.log(err);
+	// 		} else {
+	// 			res.json(doc);
+	// 		}
+	// 	});
+	// });
+	//
+	// 	//save a new note
+	// 	//then find an article from the req.params.id
+	// 	//and updates "note" with the _id of the new note
+	// app.post('/articles/:id', function(req, res){
+	// 	var newNote = new Note(req.body);
+	//
+	// 	newNote.save(function(err, doc){
+	// 		if(err){
+	// 			console.log(err);
+	// 		} else {
+	// 			Article.findOneAndUpdate({'_id': req.params.id}, {'note':doc._id})
+	// 			.exec(function(err, doc){
+	// 				if (err){
+	// 					console.log(err);
+	// 				} else {
+	// 					res.send(doc);
+	// 				}
+	// 			});
+	//
+	// 		}
+	// 	});
+	// });
 
 	app.listen(3008, function() {
 	  console.log('App running on port 3008!');
