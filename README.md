@@ -18,6 +18,7 @@
   4. [request](https://www.npmjs.com/package/request)
   5. [cheerio](https://www.npmjs.com/package/cheerio)
   5. [mongoose](https://www.npmjs.com/package/mongoose)
+	6. [morgan](https://www.npmjs.com/package/morgan)
 
 * to install these npm packages run the following command.
 ```
@@ -33,6 +34,7 @@ npm install express-handlebars --save
 npm install request --save
 npm install cheerio --save
 npm install mongoose --save
+npm install morgan --save
 
 ```
 
