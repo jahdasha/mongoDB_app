@@ -1,3 +1,4 @@
+// = Requirements ================================================================
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -6,15 +7,14 @@ var mongoose = require('mongoose');
 var request = require('request');
 var cheerio = require('cheerio');
 
+// = Middleware (pass everything through the logger first) ================================================
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
-app.use(express.static('public'));
+app.use(express.static('public')); // (create a public folder and land there)
 
-
-
-//Database configuration
+// = Database configuration ================================================
 mongoose.connect('mongodb://localhost/mongoosescraper');
 var db = mongoose.connection;
 
