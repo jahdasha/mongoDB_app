@@ -37,7 +37,7 @@
 	// = api ================================================================
 
 	app.get('/scrape', function(req, res) {
-	  request('https://medium.com/browse/b99480981476', function(error, response, html) { // "medium's technology section"
+	  request('http://www.nytimes.com/pages/technology/index.html?action=click&pgtype=Homepage&region=TopBar&module=HPMiniNav&contentCollection=Tech&WT.nav=page', function(error, response, html) { // "medium's technology section"
 
 			// console.log(html) // request works
 	    var $ = cheerio.load(html);
