@@ -15,7 +15,7 @@
 	app.use(express.static('public')); // (create a public folder and land there)
 
 // = Database configuration ================================================
-	mongoose.connect('mongodb://localhost/week18mongoosescraper');
+	mongoose.connect('mongodb://localhost/mongoosescraper');
 	var db = mongoose.connection;
 
 	db.on('error', function (err) {
@@ -34,86 +34,84 @@
 	  res.send(index.html); // sending the html file rather than rendering a handlebars file
 	});
 
-	// = api ================================================================
+app.get('/scrape', function(req, res) {
+  request('http://www.echojs.com/', function(error, response, html) {
+    var $ = cheerio.load(html);
+    $('article h2').each(function(i, element) {
 
-	app.get('/scrape', function(req, res) {
-	  request('http://www.nytimes.com/pages/technology/index.html?action=click&pgtype=Homepage&region=TopBar&module=HPMiniNav&contentCollection=Tech&WT.nav=page', function(error, response, html) { // "medium's technology section"
+				var result = {};
 
-			// console.log(html) // request works
-	    var $ = cheerio.load(html);
-			// console.log(html) // cheerio load works
-	    $('article').each(function(i, element) {
+				result.title = $(this).children('a').text();
+				result.link = $(this).children('a').attr('href');
 
-					var result = {};
+				var entry = new Article (result);
 
-					result.title = $(this).children('a').text();
-					result.link = $(this).children('a').attr('href');
-
-					var entry = new Article (result);
-
-					entry.save(function(err, doc) {
-					  if (err) {
-					    console.log(err);
-					  } else {
-					    console.log(doc);
-					  }
-					});
+				entry.save(function(err, doc) {
+				  if (err) {
+				    console.log(err);
+				  } else {
+				    console.log(doc);
+				  }
+				});
 
 
-	    });
-	  });
-	  res.send("Scrape Complete");
+    });
+  });
+  res.send("Scrape Complete");
+});
+
+
+app.get('/articles', function(req, res){
+	Article.find({}, function(err, doc){
+		if (err){
+			console.log(err);
+		} else {
+			res.json(doc);
+		}
 	});
+});
 
-	// //Finish the route so it responds with all articles
-	// app.get('/articles', function(req, res){
-	// 	Article.find({}, function(err, doc){
-	// 		if (err){
-	// 			console.log(err);
-	// 		} else {
-	// 			res.json(doc);
-	// 		}
-	// 	});
-	// });
-	//
-	// 	//Finish the route so it finds one article from the req.params.id,
-	// 	//populates "note",
-	// 	//and then responds with the article
-	// app.get('/articles/:id', function(req, res){
-	// 	Article.findOne({'_id': req.params.id})
-	// 	.populate('note')
-	// 	.exec(function(err, doc){
-	// 		if (err){
-	// 			console.log(err);
-	// 		} else {
-	// 			res.json(doc);
-	// 		}
-	// 	});
-	// });
-	//
-	// 	//save a new note
-	// 	//then find an article from the req.params.id
-	// 	//and updates "note" with the _id of the new note
-	// app.post('/articles/:id', function(req, res){
-	// 	var newNote = new Note(req.body);
-	//
-	// 	newNote.save(function(err, doc){
-	// 		if(err){
-	// 			console.log(err);
-	// 		} else {
-	// 			Article.findOneAndUpdate({'_id': req.params.id}, {'note':doc._id})
-	// 			.exec(function(err, doc){
-	// 				if (err){
-	// 					console.log(err);
-	// 				} else {
-	// 					res.send(doc);
-	// 				}
-	// 			});
-	//
-	// 		}
-	// 	});
-	// });
 
-	app.listen(3008, function() {
-	  console.log('App running on port 3008!');
+app.get('/articles/:id', function(req, res){
+	Article.findOne({'_id': req.params.id})
+	.populate('note')
+	.exec(function(err, doc){
+		if (err){
+			console.log(err);
+		} else {
+			res.json(doc);
+		}
 	});
+});
+
+
+app.post('/articles/:id', function(req, res){
+	var newNote = new Note(req.body);
+
+	newNote.save(function(err, doc){
+		if(err){
+			console.log(err);
+		} else {
+			Article.findOneAndUpdate({'_id': req.params.id}, {'note':doc._id})
+			.exec(function(err, doc){
+				if (err){
+					console.log(err);
+				} else {
+					res.send(doc);
+				}
+			});
+
+		}
+	});
+});
+
+
+
+
+
+
+
+
+app.listen(3008, function() {
+  console.log('App running on port 3008!');
+});

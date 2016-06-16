@@ -37,18 +37,21 @@
       font-size: 18px;
     }
   </style>
+  <!-- Here we include bootstrap. This will be made available to all of the generated HTML/JS that React generates-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
 <body>
-  <div id="wrapper">
-    <h1>Scraper</h1>
-    <button id="save">Save</button>
-    <button id="clear">Clear</button>
-
-    <div id="articles"></div>
-    <div id="notes"></div>
-
+  <div class="main-container">
+    <div class="jumbotron">
+      <div id="wrapper">
+        <h1>Mongo Scrapper App</h1>
+        <p></p>
+        <div id="articles"></div>
+        <div id="notes"></div>
+      </div>
+    </div>
   </div>
   <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
